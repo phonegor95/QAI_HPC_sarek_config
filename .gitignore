@@ -1,7 +1,5 @@
 data/
-.nextflow/
 results/
 work/
-*.log*
-*.pid
+.nextflow*
 *_tmp.html
