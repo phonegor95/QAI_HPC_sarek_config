@@ -1,5 +1,5 @@
-sample,sex,status
-HKQAI-A001C,XY,0
-HKQAI-A003C,XY,0
-HKQAI-1210001,XY,0
-HKQAI-1210002,XY,0
+patient,sample,sex,status
+YangNan_Buccal,HKQAI-A001C,XY,0
+LiuDa_Buccal,HKQAI-A003C,XY,0
+YangNan_Blood,HKQAI-1210001,XY,0
+HuangYuan_Blood,HKQAI-1210002,XX,0
