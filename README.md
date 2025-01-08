@@ -1,6 +1,6 @@
 # QAI HPC nf-core/sarek config
 
-### data/sample/
+### rawdata
 put all raw data per sample in data/sample/r'(L\d+)(?:_[^_]+)?_(1|2)\.fq\.gz$'
 
 ### metadata.csv header
