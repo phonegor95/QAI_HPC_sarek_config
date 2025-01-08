@@ -7,8 +7,8 @@ import argparse
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Generate Nextflow sample sheet from FASTQ files.')
-    parser.add_argument('-r', '--root', type=str, default='.', help='Root directory containing sample subdirectories.')
-    parser.add_argument('-m', '--metadata', type=str, help='Path to metadata CSV file (optional).')
+    parser.add_argument('-r', '--root', type=str, default='data', help='Root directory containing sample subdirectories.')
+    parser.add_argument('-m', '--metadata', type=str, default='metadata.csv', help='Path to metadata CSV file.')
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output.')
     args = parser.parse_args()
 
@@ -39,14 +39,6 @@ def main():
     # Initialize a list to hold CSV rows
     rows = []
 
-    # Regular expression to parse the filename
-    # This regex captures:
-    # - Group 1: lane (e.g., L2, L01)
-    # - Group 2: pair (1 or 2)
-    filename_pattern = re.compile(
-        r'^[A-Z]\d+_(L\d+)_[^_]+_(1|2)\.fq\.gz$'
-    )
-
     # Load metadata if provided
     metadata_dict = {}
     if args.metadata:
@@ -71,7 +63,7 @@ def main():
 
     def extract_status(sample):
         if args.metadata:
-            return metadata_dict.get(sample, {}).get('status', '0')
+            return metadata_dict.get(sample, {}).get('status', '')
         else:
             # Default value if metadata not provided
             return '0'
@@ -88,14 +80,14 @@ def main():
             fastq_pairs = {}
 
             for file in files:
-                match = filename_pattern.match(file)
+                match = re.search(r'(L\d+)(?:_[^_]+)?_(1|2)\.fq\.gz$', file)
                 if match:
                     lane = match.group(1)  # e.g., L2, L01
                     pair = match.group(2)  # '1' or '2'
 
                     # Unique identifier for pairing (e.g., full filename without _1/_2 and extension)
                     # Example: V300063450_L2_B5GHUMxpmRAAACAAA-572
-                    pair_id_match = re.match(r'^([A-Z]\d+_L\d+_[^_]+)', file)
+                    pair_id_match = re.match(r'^(.*)_(1|2)\.fq\.gz$', file)
                     if pair_id_match:
                         pair_id = pair_id_match.group(1)
                     else:
