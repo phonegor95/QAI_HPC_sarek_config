@@ -4,7 +4,9 @@
 put all raw data per sample in data/sample/r'(L\d+)(?:_[^_]+)?_(1|2)\.fq\.gz$'
 
 ### metadata.csv header
+```
 patient,sample,sex,status
+```
 
 ### samplesheet
 ```
