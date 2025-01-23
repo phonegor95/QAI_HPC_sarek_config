@@ -1,5 +1,6 @@
 #!/bin/bash
 nextflow run phonegor95/sarek -profile conda \
+    -process.executor local \
     --input samplesheet.csv \
     --igenomes_base /mnt/8TB-HDD/hongyongfeng/igenomes_base \
     --outdir results \
