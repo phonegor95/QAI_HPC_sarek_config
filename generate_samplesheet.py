@@ -16,7 +16,7 @@ def main():
 
     # Configure logging
     logging.basicConfig(
-        filename='samplesheet_generation.log',
+        filename='samplesheet.log',
         filemode='w',
         level=logging.WARNING,
         format='%(asctime)s - %(levelname)s - %(message)s'
@@ -50,7 +50,7 @@ def main():
             logging.info(f"Metadata loaded from '{args.metadata}'.")
         except Exception as e:
             logging.error(f"Failed to load metadata from '{args.metadata}': {e}")
-            print(f"Error: Failed to load metadata from '{args.metadata}'. Check 'samplesheet_generation.log' for details.")
+            print(f"Error: Failed to load metadata from '{args.metadata}'. Check 'samplesheet.log' for details.")
             exit(1)
 
     # Define functions to extract sex and status

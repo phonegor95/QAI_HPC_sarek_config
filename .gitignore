@@ -4,5 +4,5 @@ work/
 .nextflow*
 *_tmp.html
 samplesheet.csv
-samplesheet_generation.log
+samplesheet.log
 metadata.csv
