@@ -72,22 +72,23 @@ def main():
     for patient in os.listdir(root_dir):
         patient_path = os.path.join(root_dir, patient)
         if os.path.isdir(patient_path):
+            print(f"Processing patient directory: {patient}")
             logging.info(f"Processing patient directory: {patient}")
             # List all .fq.gz files in the patient directory
-            files = [f for f in os.listdir(patient_path) if f.endswith('.fq.gz')]
+            files = [f for f in os.listdir(patient_path) if f.endswith('.fq.gz') or f.endswith('.fastq.gz')]
 
             # Dictionary to hold FastQ pairs, keyed by a unique identifier (e.g., part before _1/_2)
             fastq_pairs = {}
 
             for file in files:
-                match = re.search(r'(L\d+)(?:_[^_]+)?_(1|2)\.fq\.gz$', file)
+                match = re.search(r'(L\d+)(?:_[^_]+)?_(R1|R2|1|2)(?:_[^_]+)?\.(fq|fastq)\.gz$', file)
                 if match:
                     lane = match.group(1)  # e.g., L2, L01
                     pair = match.group(2)  # '1' or '2'
 
                     # Unique identifier for pairing (e.g., full filename without _1/_2 and extension)
                     # Example: V300063450_L2_B5GHUMxpmRAAACAAA-572
-                    pair_id_match = re.match(r'^(.*)_(1|2)\.fq\.gz$', file)
+                    pair_id_match = re.match(r'^(.*)_(R1|R2|1|2)\.(fq|fastq)\.gz$', file)
                     if pair_id_match:
                         pair_id = pair_id_match.group(1)
                     else:
@@ -98,14 +99,14 @@ def main():
                     if pair_id not in fastq_pairs:
                         fastq_pairs[pair_id] = {'lane': lane, 'fastq_1': '', 'fastq_2': ''}
 
-                    if pair == '1':
+                    if pair == '1' or pair == 'R1':
                         if fastq_pairs[pair_id]['fastq_1']:
                             logging.warning(f"Multiple _1 files found for pair ID '{pair_id}' in '{patient}'. Previous: '{fastq_pairs[pair_id]['fastq_1']}', New: '{file}'. Skipping '{file}'.")
                             print(f"Warning: Multiple _1 files found for pair ID '{pair_id}' in '{patient}'. Skipping '{file}'.")
                         else:
                             fastq_pairs[pair_id]['fastq_1'] = os.path.join(args.root, patient, file)
                             logging.info(f"Found fastq_1 for pair ID '{pair_id}': {fastq_pairs[pair_id]['fastq_1']}")
-                    elif pair == '2':
+                    elif pair == '2' or pair == 'R2':
                         if fastq_pairs[pair_id]['fastq_2']:
                             logging.warning(f"Multiple _2 files found for pair ID '{pair_id}' in '{patient}'. Previous: '{fastq_pairs[pair_id]['fastq_2']}', New: '{file}'. Skipping '{file}'.")
                             print(f"Warning: Multiple _2 files found for pair ID '{pair_id}' in '{patient}'. Skipping '{file}'.")
@@ -138,6 +139,9 @@ def main():
                     missing = 'fastq_1' if not fastq_1 else 'fastq_2'
                     logging.warning(f"Incomplete FastQ pair for pair ID '{pair_id}' in '{patient}'. Missing '{missing}'. Skipping this entry.")
                     print(f"Warning: Incomplete FastQ pair for pair ID '{pair_id}' in '{patient}'. Missing '{missing}'. Skipping this entry.")
+        else:
+            print(f"{patient_path}. Not a directory.")
+            logging.error(f"{patient_path}. Not a directory.")
 
     # Write to CSV
     try:
